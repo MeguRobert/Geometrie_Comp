@@ -110,16 +110,7 @@ namespace ClaseForms
 
         private void button1_Click(object sender, EventArgs e)
         {
-
-
-
-
-
-
-
-
-
-            
+            //INPUTBOX
             /*
             
            string message, title, defaultValue;
@@ -229,6 +220,7 @@ namespace ClaseForms
 
         private void Button_Back_Click(object sender, EventArgs e)
         {
+            //TODO Button Back
             switch (control)
             {
                 case 1:
