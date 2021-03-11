@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Probleme_cu_vectori(matematic)", "Probleme_cu_vectori(matematic)\Probleme_cu_vectori(matematic).csproj", "{6ED0BDA6-6A7B-4875-A5D6-A9837069436E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6ED0BDA6-6A7B-4875-A5D6-A9837069436E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ED0BDA6-6A7B-4875-A5D6-A9837069436E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ED0BDA6-6A7B-4875-A5D6-A9837069436E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ED0BDA6-6A7B-4875-A5D6-A9837069436E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {916B0620-6D01-48E1-8536-5F57B418A4CE}
+	EndGlobalSection
+EndGlobal
