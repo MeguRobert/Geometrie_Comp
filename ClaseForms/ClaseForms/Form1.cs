@@ -113,7 +113,7 @@ namespace ClaseForms
             //INPUTBOX
             /*
             
-           string message, title, defaultValue;
+            string message, title, defaultValue;
             object myValue;
 
             message = $"Input the point cordinates!";
