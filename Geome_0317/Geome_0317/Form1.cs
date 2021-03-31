@@ -51,7 +51,7 @@ namespace Geome_0317
 
                 for (int i = 0; i < n; i++)
                 {
-                    Engine.points.Add(new Point(rnd.Next(400), rnd.Next(300)));
+                    Engine.points.Add(new Point(rnd.Next(width), rnd.Next(height)));
                 }
             }
             else
@@ -123,10 +123,7 @@ namespace Geome_0317
 
         private void QuickHull()
         {
-
             Engine.hull.Clear();
-            //FindExtremPointsOnAxeX();
-
             int min_x = 0, max_x = 0;
             for (int i = 1; i < Engine.points.Count; i++)
             {
@@ -135,92 +132,81 @@ namespace Geome_0317
                 if (Engine.points[i].X > Engine.points[max_x].X)
                     max_x = i;
             }
-            // Recursively find convex hull points on
-            // other side of line joining a[min_x] and
-            // a[max_x]
-            FindHull(Engine.points, Engine.points.Count, Engine.points[min_x], Engine.points[max_x], -1);
+            Engine.hull.Add(Engine.points[min_x]);
+            Engine.hull.Add(Engine.points[max_x]);
+            Point A = Engine.hull[0];
+            Point B = Engine.hull[1];
 
-            // Recursively find convex hull points on
-            // one side of line joining a[min_x] and
-            // a[max_x]
+            //the separator line
+            //myGraphics.gfx.DrawLine(new Pen(Color.Purple), A.X, A.Y, B.X, B.Y);
+
+            List<Point> S1 = new List<Point>();
+            List<Point> S2 = new List<Point>();
 
 
-            FindHull(Engine.points, Engine.points.Count, Engine.points[min_x], Engine.points[max_x], 1);
+            foreach (Point point in Engine.points)
+            {
+                float side = Matematics.FindSide(A, B, point);
+                if (side == -1) S1.Add(point);
+                side = Matematics.FindSide(B, A, point);
+                if (side == -1) S2.Add(point);
+            }
 
+            foreach (Point point in S1)
+            {
+                point.fillColor = Color.Blue;
+                point.draw(myGraphics.gfx);
+            }
+
+            foreach (Point point in S2)
+            {
+                point.fillColor = Color.Green;
+                point.draw(myGraphics.gfx);
+            }
+            FindHull(S1, A, B);
+            FindHull(S2, B, A);
 
 
             Engine.DrawHull(); //TODO How will be recursive?
-            
         }
 
-        private void FindTheFarthestPointFromLine()
+        private void FindHull(List<Point> sk, Point P, Point Q)
         {
-            //float h = 0;
-            //foreach (Point point in Engine.points)
-            //{
-            //    if (h < Matematics.Height())
-            //    {
+            if (sk.Count == 0) return;
+            int farthestPointIndex = 0;
 
-            //    }
-
-            //}
-        }
-
-        private void FindExtremPointsOnAxeX()
-        {
-            Point leftMost = Engine.points[0].X < Engine.points[1].X ? Engine.points[0] : Engine.points[1];
-            Point rightMost = Engine.points[0].X > Engine.points[1].X ? Engine.points[0] : Engine.points[1];
-            
-            for (int i = 2; i < Engine.points.Count; i++)
-            {
-                if (Engine.points[i].X < leftMost.X)
-                    leftMost = Engine.points[i];
-
-                else if (Engine.points[i].X > rightMost.X)
-                    rightMost = Engine.points[i];
-            }
-
-            Pen pen = new Pen(Color.Red);
-            myGraphics.gfx.DrawLine(pen, leftMost.X, leftMost.Y, rightMost.X, rightMost.Y);
-
-            Engine.hull.Add(leftMost);  //0
-            Engine.hull.Add(rightMost); //1
-
-        }
-
-
-        private void FindHull(List<Point> points, int n, Point p1, Point p2, int side)
-        {
-            int ind = -1;
             float max_dist = 0;
-
-            // finding the point with maximum distance
-            // from L and also on the specified side of L.
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < sk.Count; i++)
             {
-                float temp = Matematics.lineDist(p1, p2, points[i]);
-                if (Matematics.FindSide(p1, p2, points[i]) == side && temp > max_dist)
+                float dist = Matematics.lineDist(P, Q, sk[i]);
+                if (dist > max_dist)
                 {
-                    ind = i;
-                    max_dist = temp;
+                    max_dist = dist;
+                    farthestPointIndex = i;
                 }
+
             }
 
-            // If no point is found, add the end points
-            // of L to the convex hull.
-            if (ind == -1)
+            Point C = sk[farthestPointIndex];
+            int idx = Engine.hull.IndexOf(P);
+            Engine.hull.Insert(idx, C);
+
+
+            List<Point> S1 = new List<Point>();
+            List<Point> S2 = new List<Point>();
+
+            foreach (Point point in Engine.points)
             {
-
-                Engine.hull.Add(p1);
-                Engine.hull.Add(p2);
-                return;
+                float side = Matematics.FindSide(P, C, point);
+                if (side == -1) S1.Add(point);
+                side = Matematics.FindSide(C, Q, point);
+                if (side == -1) S2.Add(point);
             }
 
-            // Recur for the two parts divided by points[ind]
-            FindHull(points, n, points[ind], p1, -Matematics.FindSide(points[ind], p1, p2));
-            FindHull(points, n, points[ind], p2, -Matematics.FindSide(points[ind], p2, p1));
-        }
+            FindHull(S1, P, C);
+            FindHull(S2, C, Q);
 
+        }
 
         private void FindLowestPoint()
         {

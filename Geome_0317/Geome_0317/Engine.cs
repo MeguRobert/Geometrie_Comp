@@ -29,6 +29,7 @@ namespace Geome_0317
             foreach (Point p in points)
                 p.draw(gfx);
         }
+
         public static void DrawHull()
         {
             Color color = Color.Red;
@@ -49,6 +50,9 @@ namespace Geome_0317
             foreach (Point p in hull)
                 p.draw(myGraphics.gfx);
         }
+
+
+
         private static void DrawMyLine(List<Point> points1, int idx1, List<Point> points2, int idx2, Color lineColor)
         {
 
