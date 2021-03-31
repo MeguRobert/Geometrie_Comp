@@ -20,6 +20,7 @@ namespace Geome_0317
             resx = display.Width;
             resy = display.Height;
             clearGraph();
+            refreshGraph();
         }
 
         public static void clearGraph()

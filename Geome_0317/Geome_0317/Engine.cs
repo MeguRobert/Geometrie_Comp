@@ -15,31 +15,20 @@ namespace Geome_0317
             drawLines(gfx);
             drawSquares(gfx);
         }
-
         public static void drawSquares(Graphics gfx)
         {
             foreach (Square s in squares)
                 s.draw(gfx);
         }
-        public static void drawPolygon(Graphics gfx)
+        public static void drawPolygon(Graphics gfx , int laturi)
         {
-            drawPoints(gfx);
-            int i = 0;
-            do
-            {
-                int j = Matematics.TheNearestTo(i);
-                DrawMyLine(i, j);
-                i = j;
-            } while (i != 0);
-            DrawMyLine(i, 0);
+            Polygon.draw(gfx, laturi);
         }
-
         public static void drawPoints(Graphics gfx)
         {
             foreach (Point p in points)
                 p.draw(gfx);
         }
-
         private static void DrawMyLine(List<Point> points1, int idx1, List<Point> points2, int idx2, Color lineColor)
         {
 
@@ -61,6 +50,8 @@ namespace Geome_0317
                 gfx.DrawLine(Pens.Black, points[i].X, points[i].Y, points[i + 1].X, points[i + 1].Y);
             gfx.DrawLine(Pens.Black, points[points.Count - 1].X, points[points.Count - 1].Y, points[0].X, points[0].Y);
         }
+
+
 
 
         public static void remove()

@@ -16,6 +16,21 @@ namespace Geome_0317
             return (float)Math.Sqrt((A.X - B.X) * (A.X - B.X) + (A.Y - B.Y) * (A.Y - B.Y));
         }
 
+        static float Area(Point A, Point B, Point C)
+        {
+            return 0.5f * ((A.X * B.Y) + (B.X * C.Y) + (C.X * A.Y) - (C.X * B.Y) - (A.X * C.Y) - (A.Y * B.X));
+        }
+        public float AreaPoligon(List<Point> points)
+        {
+            Point O = new Point(0, 0);
+            float val = 0;
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                val += Area(points[i], points[i + 1], O);
+            }
+            return Math.Abs(val);
+        }
+
         public static (int,int) MinDist(int n, int idx1, int idx2)
         {
             float min = Euclid(Engine.points[0], Engine.points[1]);
@@ -36,6 +51,8 @@ namespace Geome_0317
             }
             return (idx1, idx2);
         }
+
+        
 
         public static int TheNearestTo(int idx1)
         {

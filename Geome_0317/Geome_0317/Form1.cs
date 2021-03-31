@@ -25,17 +25,7 @@ namespace Geome_0317
             height = pictureBox1.Height;
         }
 
-        private void MakeSquares(int n)
-        {
-            for (int i = 0; i < n; i++)
-            {
-                Engine.squares.Add(new Square(i));
-                Engine.drawSquares(myGraphics.gfx);
-            }
-            
-        }
-
-        
+       
 
         private void btn_refresh_Click(object sender, EventArgs e)
         {
@@ -45,18 +35,35 @@ namespace Geome_0317
         private void btn_clear_Click(object sender, EventArgs e)
         {
             Engine.clear();
-            Matematics.clear();
             myGraphics.clearGraph();
             myGraphics.refreshGraph();
         }
 
         private void btn_addPoint_Click(object sender, EventArgs e)
         {
-            float X = float.Parse(textBox1.Text);
-            float Y = float.Parse(textBox2.Text);
-            Engine.points.Add(new Point(X, Y));
+
+            string input = textBox1.Text;
+
+            if (float.TryParse(input,out float n))
+            {
+                myGraphics.clearGraph();
+                Engine.clear();
+
+                for (int i = 0; i < n; i++)
+                {
+                    Engine.points.Add(new Point(rnd.Next(400), rnd.Next(300)));
+                }
+            }
+            else
+            {
+                string[] line = textBox1.Text.Split(' ');
+                float X = float.Parse(line[0]);
+                float Y = float.Parse(line[1]);
+                Engine.points.Add(new Point(X, Y));
+            }
             Engine.drawPoints(myGraphics.gfx);
             myGraphics.refreshGraph();
+
         }
 
         private void btn_remove_Click(object sender, EventArgs e)
@@ -73,30 +80,26 @@ namespace Geome_0317
             myGraphics.refreshGraph();
         }
 
-        private void btn_draw_squares_Click(object sender, EventArgs e)
+        private void DrawLasloPoly(int n)
         {
-            int n = int.Parse(textBox1.Text);
-            MakeSquares(n);
-            myGraphics.refreshGraph();
+            Engine.drawPolygon(myGraphics.gfx, n);
         }
-
-
 
         private void draw_polygon_Click(object sender, EventArgs e)
         {
-            if (Engine.points.Count != 0) return;
+            myGraphics.gfx.Clear(Color.AliceBlue);
+            Engine.points.Clear();
             int n = int.Parse(textBox1.Text);
-            for (int i = 0; i < n; i++)
-            {
-                float x = rnd.Next(border , width - border);
-                float y = rnd.Next(border , height - border);
-
-                Engine.points.Add(new Point(x,y));
-            }
-            Engine.drawPolygon(myGraphics.gfx);
-
+            if (n < 3) return;
+            DrawLasloPoly(n);
+            //DrawNonIntersectingPoly();
             myGraphics.refreshGraph();
         }
 
+        private void button_Graham_Click(object sender, EventArgs e)
+        {
+
+        }
     }
+    
 }
