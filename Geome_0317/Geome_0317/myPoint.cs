@@ -4,7 +4,7 @@ namespace Geome_0317
 {
     public class Point
     {
-        public static int size = 2;
+        public int size = 6;
         public float X, Y;
         public Color fillColor;
         public Color drawColor;
@@ -14,7 +14,7 @@ namespace Geome_0317
         {
             this.X = 0;
             this.Y = 0;
-            this.fillColor = Color.Red;
+            this.fillColor = Color.Black;
             this.drawColor = Color.Black;
         }
 
@@ -22,7 +22,7 @@ namespace Geome_0317
         {
             this.X = X;
             this.Y = Y;
-            this.fillColor = Color.Red;
+            this.fillColor = Color.Black;
             this.drawColor = Color.Black;
         }
 
@@ -33,6 +33,8 @@ namespace Geome_0317
             this.fillColor = fillColor;
             this.drawColor = drawColor;
         }
+
+        
 
         public void draw(Graphics gfx)
         {

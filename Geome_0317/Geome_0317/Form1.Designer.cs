@@ -37,6 +37,7 @@ namespace Geome_0317
             this.btn_addPoint = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.btn_clear = new System.Windows.Forms.Button();
+            this.button_QuickHull = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -51,6 +52,7 @@ namespace Geome_0317
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.button_QuickHull);
             this.panel1.Controls.Add(this.button_Jarvis);
             this.panel1.Controls.Add(this.button_Graham);
             this.panel1.Controls.Add(this.draw_polygon);
@@ -120,6 +122,16 @@ namespace Geome_0317
             this.btn_clear.UseVisualStyleBackColor = true;
             this.btn_clear.Click += new System.EventHandler(this.btn_clear_Click);
             // 
+            // button_QuickHull
+            // 
+            this.button_QuickHull.Location = new System.Drawing.Point(3, 217);
+            this.button_QuickHull.Name = "button_QuickHull";
+            this.button_QuickHull.Size = new System.Drawing.Size(99, 49);
+            this.button_QuickHull.TabIndex = 9;
+            this.button_QuickHull.Text = "Quick Hull";
+            this.button_QuickHull.UseVisualStyleBackColor = true;
+            this.button_QuickHull.Click += new System.EventHandler(this.button_QuickHull_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -146,6 +158,7 @@ namespace Geome_0317
         private System.Windows.Forms.Button draw_polygon;
         private System.Windows.Forms.Button button_Graham;
         private System.Windows.Forms.Button button_Jarvis;
+        private System.Windows.Forms.Button button_QuickHull;
     }
 }
 

@@ -31,13 +31,23 @@ namespace Geome_0317
         }
         public static void DrawHull()
         {
-            Pen pen = new Pen(Color.Red);
+            Color color = Color.Red;
+            Pen pen = new Pen(color);
+
+            //draw hull lines
             for (int i = 0; i < hull.Count - 1; i++)
             {
-                
+                hull[i].drawColor = color;
+                hull[i].fillColor = color;
                 myGraphics.gfx.DrawLine(pen, hull[i].X,hull[i].Y, hull[i + 1].X,hull[i + 1].Y);
             }
+            hull[hull.Count - 1].drawColor = color;
+            hull[hull.Count - 1].fillColor = color;
             myGraphics.gfx.DrawLine(pen, hull[hull.Count - 1].X, hull[hull.Count - 1].Y, hull[0].X, hull[0].Y);
+
+            //draw hull points
+            foreach (Point p in hull)
+                p.draw(myGraphics.gfx);
         }
         private static void DrawMyLine(List<Point> points1, int idx1, List<Point> points2, int idx2, Color lineColor)
         {

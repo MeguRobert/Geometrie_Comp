@@ -115,6 +115,113 @@ namespace Geome_0317
             myGraphics.refreshGraph();
         }
 
+        private void button_QuickHull_Click(object sender, EventArgs e)
+        {
+            QuickHull();
+            myGraphics.refreshGraph();
+        }
+
+        private void QuickHull()
+        {
+
+            Engine.hull.Clear();
+            //FindExtremPointsOnAxeX();
+
+            int min_x = 0, max_x = 0;
+            for (int i = 1; i < Engine.points.Count; i++)
+            {
+                if (Engine.points[i].X < Engine.points[min_x].X)
+                    min_x = i;
+                if (Engine.points[i].X > Engine.points[max_x].X)
+                    max_x = i;
+            }
+            // Recursively find convex hull points on
+            // other side of line joining a[min_x] and
+            // a[max_x]
+            FindHull(Engine.points, Engine.points.Count, Engine.points[min_x], Engine.points[max_x], -1);
+
+            // Recursively find convex hull points on
+            // one side of line joining a[min_x] and
+            // a[max_x]
+
+
+            FindHull(Engine.points, Engine.points.Count, Engine.points[min_x], Engine.points[max_x], 1);
+
+
+
+            Engine.DrawHull(); //TODO How will be recursive?
+            
+        }
+
+        private void FindTheFarthestPointFromLine()
+        {
+            //float h = 0;
+            //foreach (Point point in Engine.points)
+            //{
+            //    if (h < Matematics.Height())
+            //    {
+
+            //    }
+
+            //}
+        }
+
+        private void FindExtremPointsOnAxeX()
+        {
+            Point leftMost = Engine.points[0].X < Engine.points[1].X ? Engine.points[0] : Engine.points[1];
+            Point rightMost = Engine.points[0].X > Engine.points[1].X ? Engine.points[0] : Engine.points[1];
+            
+            for (int i = 2; i < Engine.points.Count; i++)
+            {
+                if (Engine.points[i].X < leftMost.X)
+                    leftMost = Engine.points[i];
+
+                else if (Engine.points[i].X > rightMost.X)
+                    rightMost = Engine.points[i];
+            }
+
+            Pen pen = new Pen(Color.Red);
+            myGraphics.gfx.DrawLine(pen, leftMost.X, leftMost.Y, rightMost.X, rightMost.Y);
+
+            Engine.hull.Add(leftMost);  //0
+            Engine.hull.Add(rightMost); //1
+
+        }
+
+
+        private void FindHull(List<Point> points, int n, Point p1, Point p2, int side)
+        {
+            int ind = -1;
+            float max_dist = 0;
+
+            // finding the point with maximum distance
+            // from L and also on the specified side of L.
+            for (int i = 0; i < n; i++)
+            {
+                float temp = Matematics.lineDist(p1, p2, points[i]);
+                if (Matematics.FindSide(p1, p2, points[i]) == side && temp > max_dist)
+                {
+                    ind = i;
+                    max_dist = temp;
+                }
+            }
+
+            // If no point is found, add the end points
+            // of L to the convex hull.
+            if (ind == -1)
+            {
+
+                Engine.hull.Add(p1);
+                Engine.hull.Add(p2);
+                return;
+            }
+
+            // Recur for the two parts divided by points[ind]
+            FindHull(points, n, points[ind], p1, -Matematics.FindSide(points[ind], p1, p2));
+            FindHull(points, n, points[ind], p2, -Matematics.FindSide(points[ind], p2, p1));
+        }
+
+
         private void FindLowestPoint()
         {
             int lowestPointIndex = 0;
@@ -138,17 +245,17 @@ namespace Geome_0317
         }
 
 
-        private int GetTurnType(Point a, Point b, Point c)
+        private int GetTurnType(Point points, Point b, Point c)
         {
-            float area = (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
+            float area = (b.X - points.X) * (c.Y - points.Y) - (b.Y - points.Y) * (c.X - points.X);
             if (area < 0) return -1; // counterclockwise
             if (area > 0) return 1; // clockwise
             return 0; // collinear
         }
 
-        private bool IsCounterClockwiseTurn(Point a, Point b, Point c)
+        private bool IsCounterClockwiseTurn(Point points, Point b, Point c)
         {
-            return GetTurnType(a, b, c) == -1;
+            return GetTurnType(points, b, c) == -1;
         }
 
         private void SortPointsByAngle(Point center)

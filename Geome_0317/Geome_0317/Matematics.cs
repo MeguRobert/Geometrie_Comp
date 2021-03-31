@@ -1,26 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Geome_0317
 {
     public class Matematics
     {
-        private static List<int> myIndexes = new List<int>();
-
-        static float Euclid(Point A, Point B)
+        
+        public static float Euclid(Point A, Point B)
         {
             return (float)Math.Sqrt((A.X - B.X) * (A.X - B.X) + (A.Y - B.Y) * (A.Y - B.Y));
         }
 
-        static float Area(Point A, Point B, Point C)
+        public static float Area(Point A, Point B, Point C)
         {
             return 0.5f * ((A.X * B.Y) + (B.X * C.Y) + (C.X * A.Y) - (C.X * B.Y) - (A.X * C.Y) - (A.Y * B.X));
         }
-        public float AreaPoligon(List<Point> points)
+
+        public static float Height(Point A, Point B, Point C)
+        {
+            return (Area(A, B, C) * 2) / Euclid(A, B);
+        }
+
+
+        public static int FindSide(Point p1, Point p2, Point p)
+        {
+            float val = (p.Y - p1.Y) * (p2.X - p1.X) - (p2.Y - p1.Y) * (p.X - p1.X);
+            if (val > 0)
+                return 1;
+            if (val < 0)
+                return -1;
+            return 0;
+        }
+
+        public static float lineDist(Point p1, Point p2, Point p)
+        {
+            return Math.Abs((p.Y - p1.Y) * (p2.X - p1.X) -
+                       (p2.Y - p1.Y) * (p.X - p1.X));
+        }
+
+
+        public static float AreaPoligon(List<Point> points)
         {
             Point O = new Point(0, 0);
             float val = 0;
@@ -31,7 +50,7 @@ namespace Geome_0317
             return Math.Abs(val);
         }
 
-        public static (int,int) MinDist(int n, int idx1, int idx2)
+        public static (int, int) MinDist(int n, int idx1, int idx2)
         {
             float min = Euclid(Engine.points[0], Engine.points[1]);
             idx1 = 0;
@@ -52,35 +71,7 @@ namespace Geome_0317
             return (idx1, idx2);
         }
 
-        
 
-        public static int TheNearestTo(int idx1)
-        {
-            if (myIndexes.Count == 0)
-            {
-                myIndexes.Add(0);
-            }
-            float min = 10000;
-            
-            int idx2 = 0;
-            for (int i = 0; i < Engine.points.Count; i++)
-            {
-                if (idx1 == i) continue;
-                if (myIndexes.Contains(i)) continue;
-                float t = Euclid(Engine.points[idx1], Engine.points[i]);
-                if (t < min)
-                {
-                    min = t;
-                    idx2 = i;
-                }
-            }
-            myIndexes.Add(idx2);
-            return idx2;
-        }
-
-        public static void clear()
-        {
-           myIndexes.Clear();
-        }
+       
     }
 }
