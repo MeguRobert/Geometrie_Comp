@@ -10,7 +10,7 @@ namespace Geome_0317
         
         public Polygon()
         {
-            int size = 50;
+            
             
         }
 

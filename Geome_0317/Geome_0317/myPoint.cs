@@ -10,6 +10,14 @@ namespace Geome_0317
         public Color drawColor;
         public string nume;
 
+        public Point()
+        {
+            this.X = 0;
+            this.Y = 0;
+            this.fillColor = Color.Red;
+            this.drawColor = Color.Black;
+        }
+
         public Point(float X, float Y)
         {
             this.X = X;

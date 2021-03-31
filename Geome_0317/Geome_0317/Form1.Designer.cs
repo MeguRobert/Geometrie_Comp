@@ -70,6 +70,7 @@ namespace Geome_0317
             this.button_Jarvis.TabIndex = 8;
             this.button_Jarvis.Text = "Jarvis";
             this.button_Jarvis.UseVisualStyleBackColor = true;
+            this.button_Jarvis.Click += new System.EventHandler(this.button_Jarvis_Click);
             // 
             // button_Graham
             // 

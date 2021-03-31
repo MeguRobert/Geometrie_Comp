@@ -85,6 +85,8 @@ namespace Geome_0317
             Engine.drawPolygon(myGraphics.gfx, n);
         }
 
+
+
         private void draw_polygon_Click(object sender, EventArgs e)
         {
             myGraphics.gfx.Clear(Color.AliceBlue);
@@ -96,10 +98,118 @@ namespace Geome_0317
             myGraphics.refreshGraph();
         }
 
+
         private void button_Graham_Click(object sender, EventArgs e)
         {
-
+            Graham();
+            Engine.drawPoints(myGraphics.gfx);
+            Engine.DrawHull();
+            myGraphics.refreshGraph();
         }
+
+        private void button_Jarvis_Click(object sender, EventArgs e)
+        {
+            Jarvis();
+            Engine.drawPoints(myGraphics.gfx);
+            Engine.DrawHull();
+            myGraphics.refreshGraph();
+        }
+
+        private void FindLowestPoint()
+        {
+            int lowestPointIndex = 0;
+            for (int i = 1; i < Engine.points.Count; i++)
+            {
+                if (Engine.points[i].Y > Engine.points[lowestPointIndex].Y)
+                {
+                    lowestPointIndex = i;
+                }
+                else if (Engine.points[i].Y == Engine.points[lowestPointIndex].Y)
+                {
+                    if (Engine.points[i].X < Engine.points[lowestPointIndex].X)
+                    {
+                        lowestPointIndex = i;
+                    }
+                }
+            }
+            Point aux = Engine.points[lowestPointIndex];
+            Engine.points[lowestPointIndex] = Engine.points[0];
+            Engine.points[0] = aux;
+        }
+
+
+        private int GetTurnType(Point a, Point b, Point c)
+        {
+            float area = (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
+            if (area < 0) return -1; // counterclockwise
+            if (area > 0) return 1; // clockwise
+            return 0; // collinear
+        }
+
+        private bool IsCounterClockwiseTurn(Point a, Point b, Point c)
+        {
+            return GetTurnType(a, b, c) == -1;
+        }
+
+        private void SortPointsByAngle(Point center)
+        {
+            List<Point> sortedPoints =
+            Engine.points.GetRange(1, Engine.points.Count - 1).OrderBy(p => -Math.Atan2(p.Y - center.Y, p.X - center.X)).ToList();
+            Point firstPoint = Engine.points[0];
+            Engine.points.Clear();
+            Engine.points.Add(firstPoint);
+            Engine.points.AddRange(sortedPoints);
+        }
+
+        private void Graham()
+        {
+            Engine.hull.Clear();
+            FindLowestPoint();
+            SortPointsByAngle(Engine.points[0]);
+            Engine.hull.Add(Engine.points[0]);
+            Engine.hull.Add(Engine.points[1]);
+            for (int i = 2; i < Engine.points.Count; i++)
+            {
+                while (Engine.hull.Count > 1 && !IsCounterClockwiseTurn(Engine.hull[Engine.hull.Count - 2], Engine.hull[Engine.hull.Count - 1], Engine.points[i]))
+                {
+                    Engine.hull.RemoveAt(Engine.hull.Count - 1);
+                }
+                Engine.hull.Add(Engine.points[i]);
+            }
+        }
+
+        private void Jarvis()
+        {
+            Engine.hull.Clear();
+            FindLowestPoint();
+            Engine.hull.Add(Engine.points[0]);
+            Point previous = Engine.points[0];
+            while (true)
+            {
+                Point next = new Point();
+                next.X = -1;
+                next.Y = -1;
+                foreach (Point p in Engine.points)
+                {
+                    if (p.X == previous.X && p.Y == previous.Y) continue;
+                    if (next.X == -1 && next.Y == -1)
+                    {
+                        next = p;
+                        continue;
+                    }
+
+                    if (IsCounterClockwiseTurn(previous, next, p))
+                    {
+                        next = p;
+                    }
+                }
+                if (next.X == Engine.points[0].X && next.Y == Engine.points[0].Y) break;
+                Engine.hull.Add(next);
+                previous = next;
+            }
+        }
+
+        
     }
     
 }
