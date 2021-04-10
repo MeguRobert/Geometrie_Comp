@@ -402,24 +402,31 @@ namespace Geome_0317
             int[] triangles = new int[totalTriangleIndexCount];
             int currentTriangleIndex = 0;
             output.AppendText( Environment.NewLine);
-            int whilecontor = 0; // just for test & debug
+            
             while (indexList.Count > 3)
             {
-                whilecontor++;
-                for (int i = 0; i < points.Count; i++)
+                
+                for (int i = 0; i < indexList.Count; i++)
                 {
-                    int b = GetItem(indexList, i - 1); // the index of leftside neighbour
                     int a = indexList[i]; // the index of current Item
+                    int b = GetItem(indexList, i - 1); // the index of leftside neighbour
                     int c = GetItem(indexList, i + 1); // the index of righside neighbour
 
+
+                    output.AppendText($" a = {a}" + Environment.NewLine);
+                    output.AppendText($" b = {b}" + Environment.NewLine);
+                    output.AppendText($" c = {c}" + Environment.NewLine);
                     //maybe not implemented corectly
-                    Vector v1 = new Vector(points[a], points[b]);
-                    Vector v2 = new Vector(points[a], points[c]);
-                    Vector v3 = new Vector(points[c], points[b]);
+                    //Vector v1 = new Vector(points[a], points[b]);
+                    //Vector v2 = new Vector(points[a], points[c]);
+                    //Vector v3 = new Vector(points[c], points[b]);
+
+                    Point A = points[a];
+                    Point B = points[b];
+                    Point C = points[c];
 
 
-
-                    int clockwise = GetTurnType(points[a], points[b], points[c]);
+                    int clockwise = GetTurnType(A, B, C);
                     if (clockwise != -1) continue; // make a salt to next index
 
                     output.AppendText($"{i}. Clockwise: {clockwise}" + Environment.NewLine);
@@ -432,7 +439,7 @@ namespace Geome_0317
                             continue; //exclude the current index and the neighbours from test
                         }
 
-                        if (IsPointInTriangle(points[j], v1.startPoint,v2.startPoint,v3.startPoint))
+                        if (IsPointInTriangle(points[j], A,B,C))
                         {
                             isEar = false;
                             output.AppendText($" IS An Ear? {isEar}" + Environment.NewLine);
@@ -448,25 +455,15 @@ namespace Geome_0317
                         triangles[currentTriangleIndex++] = c;
 
                         indexList.RemoveAt(i);
-                        points.RemoveAt(i);
-
-                        output.AppendText($"{i}. IS AN EAR!" + Environment.NewLine);
-
-
+                        //points.RemoveAt(i);
+                        //output.AppendText($"{i}. IS AN EAR!" + Environment.NewLine);
                         Pen pen = new Pen(Color.Green);
 
-                        myGraphics.gfx.DrawLine(pen, v3.startPoint.X, v3.startPoint.Y, v3.endPoint.X, v3.endPoint.Y);
+                        myGraphics.gfx.DrawLine(pen, C.X, C.Y, B.X, B.Y);
                         myGraphics.refreshGraph();
                         break;
                     }
                         
-                }
-
-
-
-                if (whilecontor > 10)
-                {
-                    break;
                 }
 
             }
@@ -485,11 +482,15 @@ namespace Geome_0317
 
         private bool IsPointInTriangle(Point P, Point A, Point B, Point C)
         {
-            float areaOfTriangle = Matematics.Area(A, B, C);
-            float area_APB = Matematics.Area(A, P, B);
-            float area_APC = Matematics.Area(A, P, C);
-            float area_BPC = Matematics.Area(B, P, C);
+            float areaOfTriangle = Math.Abs(Matematics.Area(A, B, C));
+            float area_APB = Math.Abs(Matematics.Area(A, P, B));
+            float area_APC = Math.Abs(Matematics.Area(A, P, C));
+            float area_BPC = Math.Abs(Matematics.Area(B, P, C));
 
+            output.AppendText($"T={areaOfTriangle}" + Environment.NewLine);
+            output.AppendText($"APB{area_APB}" + Environment.NewLine);
+            output.AppendText($"APC{area_APC}" + Environment.NewLine);
+            output.AppendText($"BPC{area_BPC}" + Environment.NewLine);
             return areaOfTriangle == area_APB + area_APC + area_BPC;
         }
 
