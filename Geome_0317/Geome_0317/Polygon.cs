@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Geome_0317
 {
@@ -62,8 +63,8 @@ namespace Geome_0317
             for (int i = 0; i < n; i++)
             {
                 float l = rnd.Next(min, max);
-                float x = c.X + l * (float)Math.Cos(uc * i);
-                float y = c.Y + l * (float)Math.Sin(uc * i);
+                float x = (int)(c.X + l * (float)Math.Cos(uc * i));
+                float y = (int)(c.Y + l * (float)Math.Sin(uc * i));
                 p[i] = new PointF(x, y);
             }
             return p;
@@ -72,8 +73,19 @@ namespace Geome_0317
         public static void draw(Graphics gfx, int laturi)
         {
             PointF c = new PointF(myGraphics.resx / 2, myGraphics.resy / 2);
-            gfx.FillPolygon(new SolidBrush(Color.Red), GeneratePolygon(c, laturi));
+            PointF[] p = GeneratePolygon(c, laturi);
+            gfx.FillPolygon(new SolidBrush(Color.LightSkyBlue), p);
+            MakeListFrom(p);
             
+        }
+
+        private static void MakeListFrom(PointF[] p)
+        {
+            for (int i = 0; i < p.Length; i++)
+            {
+                Point point = new Point(p[i].X, p[i].Y);
+                Engine.points.Add(point);
+            }
         }
     }
 }

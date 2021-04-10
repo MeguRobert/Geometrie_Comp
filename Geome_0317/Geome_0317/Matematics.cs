@@ -26,10 +26,15 @@ namespace Geome_0317
         {
             float val = (p.Y - p1.Y) * (p2.X - p1.X) - (p2.Y - p1.Y) * (p.X - p1.X);
             if (val > 0)
-                return 1;
+                return 1; // left
             if (val < 0)
-                return -1;
+                return -1; // right
             return 0;
+        }
+
+        public static float Cross(Point a, Point b)
+        {
+            return a.X * b.Y - a.Y * b.X;
         }
 
         public static float lineDist(Point p1, Point p2, Point p)
@@ -38,6 +43,7 @@ namespace Geome_0317
                        (p2.Y - p1.Y) * (p.X - p1.X));
         }
 
+        
 
         public static float AreaPoligon(List<Point> points)
         {

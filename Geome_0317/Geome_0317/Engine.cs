@@ -6,8 +6,10 @@ namespace Geome_0317
     public static class Engine
     {
         public static List<Point> points = new List<Point>();
+        public static List<Triangle> triangles = new List<Triangle>();
         public static List<Square> squares = new List<Square>();
         public static List<Point> hull = new List<Point>();
+        
 
         public static void draw(Graphics gfx)
         {
@@ -24,13 +26,19 @@ namespace Geome_0317
         {
             Polygon.draw(gfx, laturi);
         }
+
+
+
+
+
+
         public static void drawPoints(Graphics gfx)
         {
             foreach (Point p in points)
                 p.draw(gfx);
         }
 
-        public static void DrawHull()
+        public static void DrawHull(Graphics gfx)
         {
             Color color = Color.Red;
             Pen pen = new Pen(color);
@@ -40,15 +48,15 @@ namespace Geome_0317
             {
                 hull[i].drawColor = color;
                 hull[i].fillColor = color;
-                myGraphics.gfx.DrawLine(pen, hull[i].X,hull[i].Y, hull[i + 1].X,hull[i + 1].Y);
+                gfx.DrawLine(pen, hull[i].X,hull[i].Y, hull[i + 1].X,hull[i + 1].Y);
             }
             hull[hull.Count - 1].drawColor = color;
             hull[hull.Count - 1].fillColor = color;
-            myGraphics.gfx.DrawLine(pen, hull[hull.Count - 1].X, hull[hull.Count - 1].Y, hull[0].X, hull[0].Y);
+            gfx.DrawLine(pen, hull[hull.Count - 1].X, hull[hull.Count - 1].Y, hull[0].X, hull[0].Y);
 
             //draw hull points
             foreach (Point p in hull)
-                p.draw(myGraphics.gfx);
+                p.draw(gfx);
         }
 
 
@@ -83,6 +91,7 @@ namespace Geome_0317
         public static void clear()
         {
             points.Clear();
+            hull.Clear();
             //squares.Clear();
         }
     }

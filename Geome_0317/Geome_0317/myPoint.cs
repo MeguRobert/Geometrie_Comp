@@ -4,7 +4,7 @@ namespace Geome_0317
 {
     public class Point
     {
-        public int size = 6;
+        public int size = 4;
         public float X, Y;
         public Color fillColor;
         public Color drawColor;
