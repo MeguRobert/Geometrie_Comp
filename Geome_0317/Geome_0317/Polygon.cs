@@ -56,8 +56,10 @@ namespace Geome_0317
 
         public static PointF[] GeneratePolygon(PointF c, int n)
         {
-            int min = rnd.Next(5,50);
-            int max = rnd.Next(50,450);
+            int min = rnd.Next(80, 100);
+            int max = rnd.Next(200, 350);
+            //int min = rnd.Next(1);
+            //int max = rnd.Next(700, 1000);
             PointF[] p = new PointF[n];
             float uc = (float)(Math.PI * 2) / (float)n;
             for (int i = 0; i < n; i++)

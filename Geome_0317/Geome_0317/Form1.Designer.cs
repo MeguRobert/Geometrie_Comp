@@ -32,7 +32,10 @@ namespace Geome_0317
             this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.button_test = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.button_Disco = new System.Windows.Forms.Button();
+            this.button_Colorful = new System.Windows.Forms.Button();
+            this.checkBox_Show_cordinates = new System.Windows.Forms.CheckBox();
             this.button_DivideEtConquer = new System.Windows.Forms.Button();
             this.output = new System.Windows.Forms.TextBox();
             this.checkBox_separatorLine = new System.Windows.Forms.CheckBox();
@@ -59,7 +62,10 @@ namespace Geome_0317
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.button_test);
+            this.panel1.Controls.Add(this.checkBox1);
+            this.panel1.Controls.Add(this.button_Disco);
+            this.panel1.Controls.Add(this.button_Colorful);
+            this.panel1.Controls.Add(this.checkBox_Show_cordinates);
             this.panel1.Controls.Add(this.button_DivideEtConquer);
             this.panel1.Controls.Add(this.output);
             this.panel1.Controls.Add(this.checkBox_separatorLine);
@@ -76,15 +82,46 @@ namespace Geome_0317
             this.panel1.Size = new System.Drawing.Size(294, 626);
             this.panel1.TabIndex = 2;
             // 
-            // button_test
+            // checkBox1
             // 
-            this.button_test.Location = new System.Drawing.Point(117, 295);
-            this.button_test.Name = "button_test";
-            this.button_test.Size = new System.Drawing.Size(99, 49);
-            this.button_test.TabIndex = 17;
-            this.button_test.Text = "test";
-            this.button_test.UseVisualStyleBackColor = true;
-            this.button_test.Click += new System.EventHandler(this.button_test_Click);
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(207, 297);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(57, 21);
+            this.checkBox1.TabIndex = 21;
+            this.checkBox1.Text = "stop";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // button_Disco
+            // 
+            this.button_Disco.Location = new System.Drawing.Point(144, 282);
+            this.button_Disco.Name = "button_Disco";
+            this.button_Disco.Size = new System.Drawing.Size(57, 49);
+            this.button_Disco.TabIndex = 20;
+            this.button_Disco.Text = "Disco";
+            this.button_Disco.UseVisualStyleBackColor = true;
+            this.button_Disco.Click += new System.EventHandler(this.button_Disco_Click);
+            // 
+            // button_Colorful
+            // 
+            this.button_Colorful.Location = new System.Drawing.Point(188, 555);
+            this.button_Colorful.Name = "button_Colorful";
+            this.button_Colorful.Size = new System.Drawing.Size(89, 68);
+            this.button_Colorful.TabIndex = 19;
+            this.button_Colorful.Text = "Colorful";
+            this.button_Colorful.UseVisualStyleBackColor = true;
+            this.button_Colorful.Click += new System.EventHandler(this.button_Colorful_Click);
+            // 
+            // checkBox_Show_cordinates
+            // 
+            this.checkBox_Show_cordinates.AutoSize = true;
+            this.checkBox_Show_cordinates.Location = new System.Drawing.Point(0, 297);
+            this.checkBox_Show_cordinates.Name = "checkBox_Show_cordinates";
+            this.checkBox_Show_cordinates.Size = new System.Drawing.Size(138, 21);
+            this.checkBox_Show_cordinates.TabIndex = 18;
+            this.checkBox_Show_cordinates.Text = "Show_cordinates";
+            this.checkBox_Show_cordinates.UseVisualStyleBackColor = true;
+            this.checkBox_Show_cordinates.CheckedChanged += new System.EventHandler(this.checkBox_Show_cordinates_CheckedChanged);
             // 
             // button_DivideEtConquer
             // 
@@ -108,7 +145,7 @@ namespace Geome_0317
             // checkBox_separatorLine
             // 
             this.checkBox_separatorLine.AutoSize = true;
-            this.checkBox_separatorLine.Location = new System.Drawing.Point(0, 283);
+            this.checkBox_separatorLine.Location = new System.Drawing.Point(0, 272);
             this.checkBox_separatorLine.Name = "checkBox_separatorLine";
             this.checkBox_separatorLine.Size = new System.Drawing.Size(117, 21);
             this.checkBox_separatorLine.TabIndex = 14;
@@ -117,9 +154,9 @@ namespace Geome_0317
             // 
             // button_Triangulate
             // 
-            this.button_Triangulate.Location = new System.Drawing.Point(119, 558);
+            this.button_Triangulate.Location = new System.Drawing.Point(93, 555);
             this.button_Triangulate.Name = "button_Triangulate";
-            this.button_Triangulate.Size = new System.Drawing.Size(99, 68);
+            this.button_Triangulate.Size = new System.Drawing.Size(89, 68);
             this.button_Triangulate.TabIndex = 13;
             this.button_Triangulate.Text = "Triangulate";
             this.button_Triangulate.UseVisualStyleBackColor = true;
@@ -159,7 +196,7 @@ namespace Geome_0317
             // 
             this.draw_polygon.Location = new System.Drawing.Point(0, 555);
             this.draw_polygon.Name = "draw_polygon";
-            this.draw_polygon.Size = new System.Drawing.Size(99, 68);
+            this.draw_polygon.Size = new System.Drawing.Size(87, 68);
             this.draw_polygon.TabIndex = 6;
             this.draw_polygon.Text = "Draw Random Polygon";
             this.draw_polygon.UseVisualStyleBackColor = true;
@@ -206,6 +243,7 @@ namespace Geome_0317
             this.Controls.Add(this.pictureBox1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -229,7 +267,10 @@ namespace Geome_0317
         private System.Windows.Forms.TextBox output;
         private System.Windows.Forms.CheckBox checkBox_separatorLine;
         private System.Windows.Forms.Button button_DivideEtConquer;
-        private System.Windows.Forms.Button button_test;
+        private System.Windows.Forms.CheckBox checkBox_Show_cordinates;
+        private System.Windows.Forms.Button button_Colorful;
+        private System.Windows.Forms.Button button_Disco;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

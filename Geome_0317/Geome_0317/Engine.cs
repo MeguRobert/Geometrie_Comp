@@ -92,6 +92,7 @@ namespace Geome_0317
         {
             points.Clear();
             hull.Clear();
+            triangles.Clear();
             //squares.Clear();
         }
     }
