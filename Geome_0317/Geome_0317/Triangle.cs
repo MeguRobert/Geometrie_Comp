@@ -8,6 +8,7 @@ namespace Geome_0317
         public Point A;
         public Point B;
         public Point C;
+
         public Triangle(Point A, Point B, Point C)
         {
             this.A = A;
@@ -16,10 +17,12 @@ namespace Geome_0317
         }
         public Triangle(int idx1, int idx2, int idx3)
         {
-            this.A = Engine.points[idx1];
-            this.B = Engine.points[idx2];
-            this.C = Engine.points[idx3];
+            A = Engine.points[idx1];
+            B = Engine.points[idx2];
+            C = Engine.points[idx3];
         }
+
+
 
         public void Draw(Color color)
         {
@@ -35,15 +38,12 @@ namespace Geome_0317
             myGraphics.gfx.FillPolygon(sb, pointf);
         }
 
-        //public void draw(Graphics gfx)
-        //{
-        //    Random rnd 
-        //    Color color = Color.FromArgb()
-        //    Pen p = new Pen(drawColor);
-        //    SolidBrush sb = new SolidBrush(fillColor);
-        //    gfx.FillEllipse(sb, X - size, Y - size, size * 2 + 1, size * 2 + 1);
-        //    gfx.DrawEllipse(p, X - size, Y - size, size * 2 + 1, size * 2 + 1);
-        //    gfx.DrawString(nume, new Font("Arial", 10, FontStyle.Regular), new SolidBrush(Color.Black), new PointF(X, Y));
-        //}
+        public Point GetWeightCenter()
+        {
+            float x = (A.X + B.X + C.X) / 3;
+            float y = (A.Y + B.Y + C.Y) / 3;
+            return new Point(x, y);
+        }
+
     }
 }

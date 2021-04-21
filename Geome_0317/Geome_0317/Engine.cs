@@ -9,6 +9,8 @@ namespace Geome_0317
         public static List<Triangle> triangles = new List<Triangle>();
         public static List<Square> squares = new List<Square>();
         public static List<Point> hull = new List<Point>();
+        public static List<Point> weightCenters = new List<Point>();
+        public static List<MyPolygon> polygons = new List<MyPolygon>();
         
 
         public static void draw(Graphics gfx)
@@ -93,6 +95,7 @@ namespace Geome_0317
             points.Clear();
             hull.Clear();
             triangles.Clear();
+            weightCenters.Clear();
             //squares.Clear();
         }
     }

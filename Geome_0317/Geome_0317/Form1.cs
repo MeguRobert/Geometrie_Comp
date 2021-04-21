@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Geome_0317
 {
-   
+
     public partial class Form1 : Form
     {
         private static Random rnd = new Random();
@@ -19,7 +15,10 @@ namespace Geome_0317
         private static int width;
         private static int height;
         private static bool animationWasStarted = false;
+        private static string status;
         private static int tick = 100;
+
+        private List<Color> Colors = new List<Color>();
         public Form1()
         {
             InitializeComponent();
@@ -27,9 +26,100 @@ namespace Geome_0317
             width = pictureBox1.Width;
             height = pictureBox1.Height;
             timer.Interval = tick;
+
+            Colors.Add(Color.Red);
+            Colors.Add(Color.Green);
+            Colors.Add(Color.Blue);
+
         }
 
-        
+
+        #region Mouse input handler
+
+        private void MouseUp(object sender, MouseEventArgs e)
+        {
+            // fires when mouse button is released after click
+
+            if (e.Button == MouseButtons.Left) // if left-click
+            {
+                // we're getting point input from user
+                Point p = new Point(e.X, e.Y);
+                Engine.points.Add(p);
+                status = "drawing";
+            }
+            else if (e.Button == MouseButtons.Right) // right-click
+            {
+                if (Engine.points.Count < 3) // polygon needs at least 3 points
+                {
+                    MessageBox.Show("You have to click at least 3 points!");
+                    return;
+                }
+
+                draw_polygon_Click(sender, null);
+            }
+
+
+            foreach (Point point in Engine.points)
+            {
+                point.draw(myGraphics.gfx);
+            }
+            myGraphics.refreshGraph();
+        }
+
+        // mouse move handler - for drawing the polygon
+        //private void panel_screen_MouseMove(object sender, MouseEventArgs e)
+        //{
+        //    if (status == "drawing") // if we'r currently in draw-mode
+        //    {
+        //        Point start, end;
+        //        //Graphics g = panel_screen.CreateGraphics();
+        //        g.Clear(Color.CornflowerBlue); // we need to clear screen as we drive lines to current mouse point
+
+        //        // draw all entered vertices markers
+        //        start = (Point)points[0];
+        //        g.DrawLine(new Pen(Color.Yellow, 2), start.X - 6, start.Y, start.X + 6, start.Y);
+        //        g.DrawLine(new Pen(Color.Yellow, 2), start.X, start.Y - 6, start.X, start.Y + 6);
+
+        //        // continue drawing vertice markers
+        //        for (int i = 0; i < points.Count - 1; i++)
+        //        {
+        //            start = (Point)points[i];
+        //            g.DrawLine(new Pen(Color.Yellow, 2), start.X - 6, start.Y, start.X + 6, start.Y);
+        //            g.DrawLine(new Pen(Color.Yellow, 2), start.X, start.Y - 6, start.X, start.Y + 6);
+        //            end = (Point)points[i + 1];
+        //            g.DrawLine(new Pen(Color.Yellow, 2), end.X - 6, end.Y, end.X + 6, end.Y);
+        //            g.DrawLine(new Pen(Color.Yellow, 2), end.X, end.Y - 6, end.X, end.Y + 6);
+        //            g.DrawLine(new Pen(Color.Blue, 2), start, end);
+        //        }
+
+        //        // draw a line from last entered vertice to current mouse cursor coordinate
+        //        start = (Point)points[points.Count - 1];
+        //        end = new Point(e.X, e.Y);
+        //        g.DrawLine(new Pen(Color.Blue, 2), start, end);
+        //        // marker to current mouse coordinate
+        //        g.DrawLine(new Pen(Color.Yellow, 2), end.X - 6, end.Y, end.X + 6, end.Y);
+        //        g.DrawLine(new Pen(Color.Yellow, 2), end.X, end.Y - 6, end.X, end.Y + 6);
+
+        //    }
+
+        //    // rulers
+
+        //    Graphics f = panel_screen.CreateGraphics();
+        //    for (int i = 0; i < panel_screen.Width; i += 100)
+        //        f.DrawString(i.ToString(), lbl_cords.Font, Brushes.Black, i, 3);
+        //    for (int i = 100; i < panel_screen.Height; i += 100)
+        //        f.DrawString(i.ToString(), lbl_cords.Font, Brushes.Black, 3, i);
+
+        //    Application.DoEvents();
+        //}
+
+        #endregion
+
+
+
+
+
+
 
         private void btn_refresh_Click(object sender, EventArgs e)
         {
@@ -38,10 +128,7 @@ namespace Geome_0317
 
         private void btn_clear_Click(object sender, EventArgs e)
         {
-            if (timer.Enabled)
-            {
-                return;
-            }
+
             Engine.clear();
             myGraphics.clearGraph();
             myGraphics.refreshGraph();
@@ -49,8 +136,8 @@ namespace Geome_0317
 
         private void btn_addPoint_Click(object sender, EventArgs e)
         {
-            myGraphics.clearGraph();
-            Engine.clear();
+            //myGraphics.clearGraph();
+            //Engine.clear();
             //output.Text = "Punctele eliminate sunt:" ;
             if (GetInputs() == 0) return;
             Engine.drawPoints(myGraphics.gfx);
@@ -102,21 +189,31 @@ namespace Geome_0317
         private void DrawLasloPoly(int n)
         {
             Engine.drawPolygon(myGraphics.gfx, n);
-            
+
 
         }
 
-        
+
 
         private void draw_polygon_Click(object sender, EventArgs e)
         {
-            myGraphics.gfx.Clear(Color.AliceBlue);
-            Engine.clear();
+            //myGraphics.gfx.Clear(Color.AliceBlue);
+            //Engine.clear();
             output.Text = "Aria Poligonului: ";
-            int n = int.Parse(textBox1.Text);
-            if (n < 3) return;
-            DrawLasloPoly(n);
-            myGraphics.refreshGraph();
+            if (Engine.points.Count == 0)
+            {
+                if (textBox1.Text == "") return;
+                int n = int.Parse(textBox1.Text);
+                if (n < 3) return;
+                DrawLasloPoly(n);
+                myGraphics.refreshGraph();
+            }
+            else
+            {
+                Engine.drawLines(myGraphics.gfx);
+                myGraphics.refreshGraph();
+            }
+
         }
 
         private void DrawCordinates()
@@ -126,7 +223,7 @@ namespace Geome_0317
                 Point p = Engine.points[i];
                 string text = $"P{i}({p.X},{p.Y})";
                 Font font = new Font(FontFamily.GenericSansSerif, 100);
-                using (Font myfont = new Font("Arial" , 8))
+                using (Font myfont = new Font("Arial", 8))
                 {
                     if (!checkBox_Show_cordinates.Checked)
                     {
@@ -136,7 +233,7 @@ namespace Geome_0317
                 }
 
             }
-            
+
 
         }
 
@@ -158,7 +255,7 @@ namespace Geome_0317
 
         private void button_QuickHull_Click(object sender, EventArgs e)
         {
-            
+
             QuickHull();
             Engine.DrawHull(myGraphics.gfx);
             myGraphics.refreshGraph();
@@ -211,7 +308,7 @@ namespace Geome_0317
             foreach (Point point in S1)
             {
                 //point.fillColor = Color.Blue;
-                point.fillColor = Color.FromArgb(rnd.Next(255),rnd.Next(255),rnd.Next(255));
+                point.fillColor = Color.FromArgb(rnd.Next(255), rnd.Next(255), rnd.Next(255));
                 point.draw(myGraphics.gfx);
             }
 
@@ -225,7 +322,7 @@ namespace Geome_0317
             FindHull(S2, B, A);
 
 
-            
+
         }
 
         private void FindHull(List<Point> sk, Point P, Point Q)
@@ -266,11 +363,11 @@ namespace Geome_0317
             FindHull(S2, C, Q);
 
 
-            
+
         }
 
 
-        
+
 
         private void FindLowestPoint()
         {
@@ -368,9 +465,9 @@ namespace Geome_0317
 
         private void button_Animate_QuickHull_Click(object sender, EventArgs e)
         {
-            timer.Start(); 
-            QuickHull(); 
-           
+            timer.Start();
+            QuickHull();
+
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -386,6 +483,7 @@ namespace Geome_0317
 
         private void button_Triangulate_Click(object sender, EventArgs e)
         {
+
             double area = 0;
             int count = Engine.points.Count;
             if (count < 3) return;
@@ -393,7 +491,7 @@ namespace Geome_0317
 
             List<Point> points = Engine.points;// lista temporara
             List<int> indexList = new List<int>();
-            
+
             for (int i = 0; i < points.Count; i++)
             {
                 indexList.Add(i); //initializarea listei de indecsi de la 0 pana la nr de puncte
@@ -403,8 +501,6 @@ namespace Geome_0317
             Point B;
             Point C;
 
-            output.AppendText( Environment.NewLine);
-            
             while (indexList.Count > 3)
             {
                 for (int i = 0; i < indexList.Count; i++)
@@ -429,7 +525,7 @@ namespace Geome_0317
                             continue; //excluding the current index and the neighbours from test
                         }
 
-                        if (IsPointInTriangle(points[j], A,B,C)) 
+                        if (IsPointInTriangle(points[j], A, B, C))
                         {
                             isEar = false;
                             break;
@@ -439,7 +535,7 @@ namespace Geome_0317
 
                     if (isEar)
                     {
-                        
+
                         Engine.triangles.Add(new Triangle(A, B, C)); //add the triangle in the list, if is a valid ear.
 
                         indexList.RemoveAt(i); //remove the current index from the indexlist
@@ -450,7 +546,7 @@ namespace Geome_0317
                         myGraphics.refreshGraph();
                         break;
                     }
-                        
+
                 }
 
             }
@@ -466,10 +562,16 @@ namespace Geome_0317
             foreach (Triangle triangle in Engine.triangles)
             {
                 area += Math.Abs(Matematics.Area(triangle.A, triangle.B, triangle.C));
-                
+
             }
 
-            output.AppendText($"{area}");
+
+
+            points.Clear();
+            indexList.Clear();
+
+            output.Text = "Area:" + Environment.NewLine + area;
+            status = "triangulation completed";
 
         }
 
@@ -551,7 +653,7 @@ namespace Geome_0317
                 side = Matematics.FindSide(B, A, point);
                 if (side == -1) S2.Add(point);
             }
-           
+
             FindHull(S1, A, B);
             FindHull(S2, B, A);
         }
@@ -564,7 +666,7 @@ namespace Geome_0317
 
         private void Form1_Load(object sender, EventArgs e)
         {
-           
+
 
         }
 
@@ -589,7 +691,7 @@ namespace Geome_0317
             if (!timer.Enabled)
             {
                 timer.Start();
-                
+
             }
             if (checkBox1.Checked)
             {
@@ -608,6 +710,130 @@ namespace Geome_0317
             DrawCordinates();
             myGraphics.refreshGraph();
         }
+
+        private void button_Dual_Click(object sender, EventArgs e)
+        {
+            List<Triangle> triangles = Engine.triangles;
+            List<int> indexes = new List<int>();
+            if (triangles.Count == 0) return;
+            indexes.Add(0);
+            Dual(triangles[0], indexes);
+            myGraphics.refreshGraph();
+        }
+
+        private void Dual(Triangle triangle, List<int> indexes)
+        {
+            Point weightCenter = triangle.GetWeightCenter();
+            //afisare centru de greutate
+            weightCenter.fillColor = Color.Coral; 
+            weightCenter.draw(myGraphics.gfx);
+            int neighbourContor = 0;
+            for (int i = 0; i < Engine.triangles.Count; i++)
+            {
+                if (indexes.Contains(i)) continue;
+                if (TrianglesHaveCommonSide(triangle, Engine.triangles[i]))
+                {
+                    indexes.Add(i);
+                    Point newWeightCenter = Engine.triangles[i].GetWeightCenter();
+                    Dual(Engine.triangles[i], indexes); //reapelare functie(recursivitate);
+                    myGraphics.gfx.DrawLine(Pens.Black, weightCenter.X, weightCenter.Y, newWeightCenter.X, newWeightCenter.Y);
+                    neighbourContor++;
+                }
+                if (neighbourContor == 2) break;
+            }
+        }
+
+        private bool TrianglesHaveCommonSide(Triangle triangle1, Triangle triangle2)
+        {
+            int commonvertexcount = 0;
+            if (triangle1.A == triangle2.A || triangle1.A == triangle2.B || triangle1.A == triangle2.C) commonvertexcount++;
+            if (triangle1.B == triangle2.A || triangle1.B == triangle2.B || triangle1.B == triangle2.C) commonvertexcount++;
+            if (triangle1.C == triangle2.A || triangle1.C == triangle2.B || triangle1.C == triangle2.C) commonvertexcount++;
+            if (commonvertexcount == 2) return true;
+            return false;
+        }
+
+        
+
+        private void button_3color_Click(object sender, EventArgs e)
+        {
+            if (status == "triangulation completed")
+            {
+
+                List<Triangle> triangles = Engine.triangles;
+                List<int> indexes = new List<int>();
+                if (triangles.Count == 0) return;
+                indexes.Add(0);
+
+                triangles[0].A.fillColor = Color.Blue;
+                triangles[0].B.fillColor = Color.Red;
+                triangles[0].C.fillColor = Color.Green;
+
+                threecolors(triangles[0], indexes);
+
+                foreach (Triangle triangle in Engine.triangles)
+                {
+                    triangle.A.draw(myGraphics.gfx);
+                    triangle.B.draw(myGraphics.gfx);
+                    triangle.C.draw(myGraphics.gfx);
+                }
+                myGraphics.refreshGraph();
+            }
+        }
+
+        public void threecolors(Triangle triangle, List<int> indexes)
+        {
+
+            if (triangle.A.fillColor == Color.Black)
+            {
+                foreach (Color color in Colors)
+                {
+                    if (triangle.B.fillColor != color && triangle.C.fillColor != color)
+                    {
+                        triangle.A.fillColor = color;
+                        break;
+                    }
+                }
+            }
+            else if (triangle.B.fillColor == Color.Black)
+            {
+                foreach (Color color in Colors)
+                {
+                    if (triangle.A.fillColor != color && triangle.C.fillColor != color)
+                    {
+                        triangle.B.fillColor = color;
+                        break;
+                    }
+                }
+            }
+            else if (triangle.C.fillColor == Color.Black)
+            {
+                foreach (Color color in Colors)
+                {
+                    if (triangle.B.fillColor != color && triangle.A.fillColor != color)
+                    {
+                        triangle.C.fillColor = color;
+                        break;
+                    }
+                }
+            }
+
+            int neighbourContor = 0;
+            for (int i = 0; i < Engine.triangles.Count; i++)
+            {
+                if (indexes.Contains(i)) continue;
+                if (TrianglesHaveCommonSide(triangle, Engine.triangles[i]))
+                {
+                    indexes.Add(i);
+                    threecolors(Engine.triangles[i], indexes);
+                    neighbourContor++;
+                }
+                if (neighbourContor == 2) break;
+            }
+
+        }
+
+
     }
-    
+
 }

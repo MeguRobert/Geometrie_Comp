@@ -32,6 +32,7 @@ namespace Geome_0317
             this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button_Dual = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button_Disco = new System.Windows.Forms.Button();
             this.button_Colorful = new System.Windows.Forms.Button();
@@ -48,6 +49,7 @@ namespace Geome_0317
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.btn_clear = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
+            this.button_3color = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -59,9 +61,12 @@ namespace Geome_0317
             this.pictureBox1.Size = new System.Drawing.Size(979, 626);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MouseUp);
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.button_3color);
+            this.panel1.Controls.Add(this.button_Dual);
             this.panel1.Controls.Add(this.checkBox1);
             this.panel1.Controls.Add(this.button_Disco);
             this.panel1.Controls.Add(this.button_Colorful);
@@ -81,6 +86,16 @@ namespace Geome_0317
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(294, 626);
             this.panel1.TabIndex = 2;
+            // 
+            // button_Dual
+            // 
+            this.button_Dual.Location = new System.Drawing.Point(4, 548);
+            this.button_Dual.Name = "button_Dual";
+            this.button_Dual.Size = new System.Drawing.Size(83, 68);
+            this.button_Dual.TabIndex = 22;
+            this.button_Dual.Text = "Dual";
+            this.button_Dual.UseVisualStyleBackColor = true;
+            this.button_Dual.Click += new System.EventHandler(this.button_Dual_Click);
             // 
             // checkBox1
             // 
@@ -104,7 +119,7 @@ namespace Geome_0317
             // 
             // button_Colorful
             // 
-            this.button_Colorful.Location = new System.Drawing.Point(188, 555);
+            this.button_Colorful.Location = new System.Drawing.Point(188, 474);
             this.button_Colorful.Name = "button_Colorful";
             this.button_Colorful.Size = new System.Drawing.Size(89, 68);
             this.button_Colorful.TabIndex = 19;
@@ -139,7 +154,7 @@ namespace Geome_0317
             this.output.Multiline = true;
             this.output.Name = "output";
             this.output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.output.Size = new System.Drawing.Size(264, 188);
+            this.output.Size = new System.Drawing.Size(264, 118);
             this.output.TabIndex = 15;
             // 
             // checkBox_separatorLine
@@ -154,7 +169,7 @@ namespace Geome_0317
             // 
             // button_Triangulate
             // 
-            this.button_Triangulate.Location = new System.Drawing.Point(93, 555);
+            this.button_Triangulate.Location = new System.Drawing.Point(93, 474);
             this.button_Triangulate.Name = "button_Triangulate";
             this.button_Triangulate.Size = new System.Drawing.Size(89, 68);
             this.button_Triangulate.TabIndex = 13;
@@ -194,7 +209,7 @@ namespace Geome_0317
             // 
             // draw_polygon
             // 
-            this.draw_polygon.Location = new System.Drawing.Point(0, 555);
+            this.draw_polygon.Location = new System.Drawing.Point(0, 474);
             this.draw_polygon.Name = "draw_polygon";
             this.draw_polygon.Size = new System.Drawing.Size(87, 68);
             this.draw_polygon.TabIndex = 6;
@@ -234,6 +249,16 @@ namespace Geome_0317
             // 
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
+            // button_3color
+            // 
+            this.button_3color.Location = new System.Drawing.Point(93, 548);
+            this.button_3color.Name = "button_3color";
+            this.button_3color.Size = new System.Drawing.Size(89, 68);
+            this.button_3color.TabIndex = 23;
+            this.button_3color.Text = "3color";
+            this.button_3color.UseVisualStyleBackColor = true;
+            this.button_3color.Click += new System.EventHandler(this.button_3color_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -271,6 +296,8 @@ namespace Geome_0317
         private System.Windows.Forms.Button button_Colorful;
         private System.Windows.Forms.Button button_Disco;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button_Dual;
+        private System.Windows.Forms.Button button_3color;
     }
 }
 
