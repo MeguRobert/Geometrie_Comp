@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Geome_0317
@@ -7,9 +8,11 @@ namespace Geome_0317
     {
         //GDI / GDI+
         public static Bitmap bmp;
+        public static Stack<Bitmap> bitmaps = new Stack<Bitmap>();
         public static Graphics gfx;
         public static PictureBox display;
         public static int resx, resy;
+        public static int step;
         public static Color backColor = Color.AliceBlue;
 
         public static void initGraph(PictureBox Display)
@@ -19,6 +22,7 @@ namespace Geome_0317
             gfx = Graphics.FromImage(bmp);
             resx = display.Width;
             resy = display.Height;
+            step = 0;
             clearGraph();
             refreshGraph();
         }
@@ -29,7 +33,15 @@ namespace Geome_0317
         }
         public static void refreshGraph()
         {
-            display.Image = bmp;
+            bitmaps.Push(bmp);
+            display.Image = bitmaps.Peek(); 
+            
+        }
+
+        public static void undo()
+        {
+            
+            bitmaps.Pop();
         }
         //transformari de puncte pt zoom;
     }

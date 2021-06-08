@@ -1,8 +1,12 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace Geome_0317
 {
-    public class Point
+
+
+
+    public partial class Point
     {
         public int size = 4;
         public float X, Y;
@@ -44,6 +48,12 @@ namespace Geome_0317
             gfx.DrawEllipse(p, X - size, Y - size, size * 2 + 1, size * 2 + 1);
             //gfx.DrawString(nume, new Font("Arial", 10, FontStyle.Regular), new SolidBrush(Color.Black), new PointF(X, Y));
         }
+        
+        public bool IsOnLine(Line line)
+        {
+            
+            return false;
+        }
 
         public void draw(Brush b)
         {
@@ -52,6 +62,8 @@ namespace Geome_0317
             myGraphics.gfx.DrawEllipse(p, X - size, Y - size, size * 2 + 1, size * 2 + 1);
             //myGraphics.gfx.DrawString(nume, new Font("Arial", 10, FontStyle.Regular), new SolidBrush(Color.Black), new PointF(X, Y));
         }
+
+
 
         public static bool operator ==(Point A, Point B)
         {
@@ -65,5 +77,29 @@ namespace Geome_0317
             return !(A == B);
         }
 
+        public static implicit operator PointF(Point p)
+        {
+            PointF pointF = new PointF(p.X, p.Y);
+            return pointF;
+        }
+
+
+        public static implicit operator Point(PointF p)
+        {
+            Point point = new Point(p.X, p.Y);
+            return point;
+        }
+
+
+      
+
+
+        
+
     }
+
+
+
+
+
 }

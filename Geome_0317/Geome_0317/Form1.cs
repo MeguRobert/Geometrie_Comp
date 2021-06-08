@@ -15,10 +15,14 @@ namespace Geome_0317
         private static int width;
         private static int height;
         private static bool animationWasStarted = false;
+        private static bool showCoordonates = false;
         private static string status;
         private static int tick = 100;
-
         private List<Color> Colors = new List<Color>();
+        private List<PointF> _pointFs = new List<PointF>();
+        private List<Line> segments = new List<Line>();
+
+
         public Form1()
         {
             InitializeComponent();
@@ -30,8 +34,17 @@ namespace Geome_0317
             Colors.Add(Color.Red);
             Colors.Add(Color.Green);
             Colors.Add(Color.Blue);
+            
+        }
+
+
+        #region Menu
+
+        private void EnableMenus()
+        {
 
         }
+        #endregion
 
 
         #region Mouse input handler
@@ -49,13 +62,29 @@ namespace Geome_0317
             }
             else if (e.Button == MouseButtons.Right) // right-click
             {
-                if (Engine.points.Count < 3) // polygon needs at least 3 points
+                //if (Engine.points.Count < 3) // polygon needs at least 3 points
+                //{
+                //    MessageBox.Show("You have to click at least 3 points!");
+                //    return;
+                //}
+
+                int n = Engine.points.Count;
+
+                if (n % 2 == 0)
                 {
-                    MessageBox.Show("You have to click at least 3 points!");
-                    return;
+                    PointF P0 = Engine.points[n-2];
+                    PointF P1 = Engine.points[n-1];
+                    segments.Add(new Line(P0, P1));
+                    myGraphics.gfx.DrawLine(new Pen(Color.Black), P0, P1);
+
                 }
 
-                draw_polygon_Click(sender, null);
+
+                //else
+                //{
+                //    draw_polygon_Click(sender, null);
+                //}
+
             }
 
 
@@ -118,27 +147,57 @@ namespace Geome_0317
 
 
 
+        private void FindIntersection(PointF p1, PointF p2, PointF p3, PointF p4,
+           //out bool lines_intersect, out bool segments_intersect,
+           out Point intersection)
+        {
+            // Get the segments' parameters.
+            float dx12 = p2.X - p1.X;
+            float dy12 = p2.Y - p1.Y;
+            float dx34 = p4.X - p3.X;
+            float dy34 = p4.Y - p3.Y;
 
+            // Solve for t1 and t2
+            float denominator = (dy12 * dx34 - dx12 * dy34);
+            float t1 = ((p1.X - p3.X) * dy34 + (p3.Y - p1.Y) * dx34) / denominator;
+            if (float.IsInfinity(t1))
+            {
+                intersection = new Point(float.NaN, float.NaN);
+                return;
+            }
+
+            // Find the point of intersection.
+            intersection = new Point(p1.X + dx12 * t1, p1.Y + dy12 * t1);
+        }
 
 
         private void btn_refresh_Click(object sender, EventArgs e)
         {
             myGraphics.refreshGraph();
         }
+        private void btn_undo_Click(object sender, EventArgs e)
+        {
+            btn_remove_Click(sender, null);
+            myGraphics.refreshGraph();
+        }
+        private void btn_redo_Click(object sender, EventArgs e)
+        {
+            btn_remove_Click(sender, null);
+            myGraphics.refreshGraph();
+        }
 
         private void btn_clear_Click(object sender, EventArgs e)
         {
-
+            output.Clear();
             Engine.clear();
+            _pointFs.Clear();
+            segments.Clear();
             myGraphics.clearGraph();
             myGraphics.refreshGraph();
         }
 
         private void btn_addPoint_Click(object sender, EventArgs e)
         {
-            //myGraphics.clearGraph();
-            //Engine.clear();
-            //output.Text = "Punctele eliminate sunt:" ;
             if (GetInputs() == 0) return;
             Engine.drawPoints(myGraphics.gfx);
             myGraphics.refreshGraph();
@@ -148,6 +207,9 @@ namespace Geome_0317
         private int GetInputs()
         {
             string input = textBox1.Text;
+
+
+
             if (input == "")
             {
                 return 0;
@@ -160,22 +222,34 @@ namespace Geome_0317
                 for (int i = 0; i < n; i++)
                 {
                     Engine.points.Add(new Point(rnd.Next(width), rnd.Next(height)));
+                    Engine.points[i].fillColor = Color.FromArgb(rnd.Next(240), rnd.Next(240), rnd.Next(240));
                 }
             }
             else
             {
                 string[] line = textBox1.Text.Split(' ');
-                float X = float.Parse(line[0]);
-                float Y = float.Parse(line[1]);
+                float X = float.Parse(line[0]) * GetSize();
+                float Y = float.Parse(line[1]) * GetSize();
                 Engine.points.Add(new Point(X, Y));
             }
             return Engine.points.Count;
         }
 
+        private int GetSize()
+        {
+            string input2 = textBox2.Text;
+            int size = 1;
+            if (input2 != "")
+            {
+                size = int.Parse(input2);
+            }
+            return size;
+        }
+
         private void btn_remove_Click(object sender, EventArgs e)
         {
             myGraphics.clearGraph();
-            Engine.remove();
+            Engine.removepoints();
             Engine.draw(myGraphics.gfx);
             myGraphics.refreshGraph();
         }
@@ -199,7 +273,6 @@ namespace Geome_0317
         {
             //myGraphics.gfx.Clear(Color.AliceBlue);
             //Engine.clear();
-            output.Text = "Aria Poligonului: ";
             if (Engine.points.Count == 0)
             {
                 if (textBox1.Text == "") return;
@@ -216,7 +289,7 @@ namespace Geome_0317
 
         }
 
-        private void DrawCordinates()
+        private void DrawCoordonates()
         {
             for (int i = 0; i < Engine.points.Count; i++)
             {
@@ -225,7 +298,7 @@ namespace Geome_0317
                 Font font = new Font(FontFamily.GenericSansSerif, 100);
                 using (Font myfont = new Font("Arial", 8))
                 {
-                    if (!checkBox_Show_cordinates.Checked)
+                    if (!showCoordonates)
                     {
                         text = " ";
                     }
@@ -234,7 +307,7 @@ namespace Geome_0317
 
             }
 
-
+            myGraphics.refreshGraph();
         }
 
         private void button_Graham_Click(object sender, EventArgs e)
@@ -288,10 +361,10 @@ namespace Geome_0317
             Point B = Engine.hull[1];
 
             //the separator line
-            if (checkBox_separatorLine.Checked)
-            {
-                myGraphics.gfx.DrawLine(new Pen(Color.Purple), A.X, A.Y, B.X, B.Y);
-            }
+            //if (checkBox_separatorLine.Checked)
+            //{
+            //    myGraphics.gfx.DrawLine(new Pen(Color.Purple), A.X, A.Y, B.X, B.Y);
+            //}
 
             List<Point> S1 = new List<Point>();
             List<Point> S2 = new List<Point>();
@@ -393,6 +466,13 @@ namespace Geome_0317
 
 
         private int GetTurnType(Point a, Point b, Point c)
+        {
+            float area = (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
+            if (area < 0) return -1; // counterclockwise
+            if (area > 0) return 1; // clockwise
+            return 0;               // collinear
+        }
+        private int GetTurnType2(Point b, Point a, Point c)
         {
             float area = (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
             if (area < 0) return -1; // counterclockwise
@@ -662,12 +742,34 @@ namespace Geome_0317
         {
             //this button is reserved for testing//
 
+            Point A = Engine.points[0];
+            Point B = Engine.points[1];
+            Point P = Engine.points[2];
+
+            int turn = GetTurnType(A, B, P);
+            if (turn == 1)
+            {
+                //output.AppendText("clockwise to A-B");
+            }
+            else
+            {
+                //output.AppendText("ANTI clockwise to A-B");
+
+            }
+
         }
+
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //if (showCoordonates) DrawCoordonates();
+        }
 
-
+        private void button_ShowCoordonates_Click(object sender, EventArgs e)
+        {
+            showCoordonates = !showCoordonates;
+            DrawCoordonates();
         }
 
         private void button_Colorful_Click(object sender, EventArgs e)
@@ -693,10 +795,10 @@ namespace Geome_0317
                 timer.Start();
 
             }
-            if (checkBox1.Checked)
-            {
-                timer.Stop();
-            }
+            //if (checkBox1.Checked)
+            //{
+            //    timer.Stop();
+            //}
 
             //draw_polygon_Click(sender, e);
             //button_Triangulate_Click(sender, e);
@@ -705,11 +807,7 @@ namespace Geome_0317
             //button_QuickHull_Click(sender, e);
         }
 
-        private void checkBox_Show_cordinates_CheckedChanged(object sender, EventArgs e)
-        {
-            DrawCordinates();
-            myGraphics.refreshGraph();
-        }
+
 
         private void button_Dual_Click(object sender, EventArgs e)
         {
@@ -725,7 +823,7 @@ namespace Geome_0317
         {
             Point weightCenter = triangle.GetWeightCenter();
             //afisare centru de greutate
-            weightCenter.fillColor = Color.Coral; 
+            weightCenter.fillColor = Color.Coral;
             weightCenter.draw(myGraphics.gfx);
             int neighbourContor = 0;
             for (int i = 0; i < Engine.triangles.Count; i++)
@@ -753,7 +851,7 @@ namespace Geome_0317
             return false;
         }
 
-        
+
 
         private void button_3color_Click(object sender, EventArgs e)
         {
@@ -831,6 +929,221 @@ namespace Geome_0317
                 if (neighbourContor == 2) break;
             }
 
+        }
+
+        private void isConvex_Click(object sender, EventArgs e)
+        {
+
+
+            List<Point> points = Engine.points;// lista temporara
+            List<int> indexList = new List<int>();
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                indexList.Add(i); //initializarea listei de indecsi de la 0 pana la nr de puncte
+            }
+
+            Point A;
+            Point B;
+            Point C;
+
+            bool isMonoton = true;
+            for (int i = 0; i < indexList.Count; i++)
+            {
+                int a = indexList[i]; // the index of current Item
+                int b = GetItem(indexList, i - 1); // the index of leftside neighbour
+                int c = GetItem(indexList, i + 1); // the index of righside neighbour
+
+                A = points[a];
+                B = points[b];
+                C = points[c];
+
+                int clockwise = GetTurnType(A, B, C);
+                if (clockwise != -1)
+                {
+                    isMonoton = false;
+                    Engine.concavevertex.Add(A);
+
+                    int j = c+1;
+                    while (j!=b)
+                    {
+                        j %= indexList.Count;
+                        if (j == b || j == c) continue;
+                        Point P = points[j];
+
+                        int cw1 = GetTurnType2(B, A, P);
+                        int cw2 = GetTurnType2(C, A, P);
+
+
+                        j++;
+                        if (cw1 != -1 || cw2 == -1)
+                        //if (cw1 != -1)
+                        {
+                            bool validpoint = true;
+
+                            foreach (Point point in Engine.points)
+                            {
+                                if (point == A || point == B || point == C || point == P ) continue;
+                                if (IsPointInTriangle(point, B, A, P) || IsPointInTriangle(point, C, A, P))
+                                { validpoint = false; break; }
+                            }
+
+                            if (!validpoint) continue;
+                            myGraphics.gfx.DrawLine(new Pen(Color.Red), A.X, A.Y, P.X, P.Y);
+                            
+                        }
+                    }
+
+                }
+
+            }
+
+            if (isMonoton)
+            {
+                output.AppendText("Poligonul este monoton");
+            }
+            else
+            {
+                output.AppendText("Poligonul NU este Monoton");
+
+
+            }
+
+            myGraphics.refreshGraph();
+        }
+
+        private void diagramToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void intersection_Click(object sender, EventArgs e)
+        {
+            Point intersection;
+            Engine.clear();
+
+            for (int i = 0; i < segments.Count; i++)
+            {
+                for (int j = i; j < segments.Count; j++)
+                {
+                    if (i == j) continue;
+                    FindIntersection(segments[i].A, segments[i].B, segments[j].A, segments[j].B, out intersection);
+
+
+                    int turna = GetTurnType(segments[i].A, intersection, segments[j].A);
+                    int turnb = GetTurnType(segments[i].A, intersection, segments[j].B);
+                    if (turna != turnb)
+                    {
+                        output.AppendText("P is on Line");
+                        intersection.fillColor = Color.Red;
+                        Engine.points.Add(intersection);
+                        output.AppendText($"{Engine.points[i].X} {Engine.points[i].Y}" + Environment.NewLine);
+                        intersection.draw(myGraphics.gfx);
+                    }
+                    else
+                    {
+                        output.AppendText("P is NOT on Line");
+                    }
+
+                    //if()
+                    //{
+
+                    //    intersection.fillColor = Color.Red;
+                    //    Engine.points.Add(intersection);
+                    //    output.AppendText($"{Engine.points[i].X} {Engine.points[i].Y}" + Environment.NewLine);
+                    //    intersection.draw(myGraphics.gfx);
+                    //}
+
+
+
+                }
+            }
+
+
+
+
+
+
+
+
+            Color color = Color.FromArgb(100, Color.Orange);
+            List<Point> pointFs = NonIntersectingPolyByPoints(Engine.points);
+            PointF[] points = Engine.ConvertToPointF_FromList(pointFs);
+            //myGraphics.gfx.FillPolygon(new SolidBrush(color), NonIntersectingPolyByPoints(Engine.points));
+            myGraphics.gfx.FillPolygon(new SolidBrush(color), points);
+
+
+
+
+
+
+            myGraphics.refreshGraph();
+        }
+
+
+        private List<Point> NonIntersectingPolyByPoints(List<Point> points)
+        {
+            PointF leftMost = new PointF(pictureBox1.Width, 0);
+            PointF rightMost = new PointF(0, 0);
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                if (points[i].X < leftMost.X)
+                    leftMost = points[i];
+
+                if (points[i].X > rightMost.X)
+                    rightMost = points[i];
+            }
+
+            points.Remove(leftMost);
+            points.Remove(rightMost);
+
+            List<Point> A = new List<Point>();
+            List<Point> B = new List<Point>();
+
+            foreach (PointF point in points)
+            {
+                if (directionOfPointToRight(leftMost, rightMost, point))
+                    B.Add(point);
+                else
+                    A.Add(point);
+            }
+
+            A = A.OrderBy(x => x.X).ToList();
+            B = B.OrderByDescending(x => x.X).ToList();
+
+            List<Point> sortedPoints = new List<Point>();
+
+            sortedPoints.Add(leftMost);
+            sortedPoints.AddRange(A);
+            sortedPoints.Add(rightMost);
+            sortedPoints.AddRange(B);
+
+            A.Insert(0, leftMost);
+            A.Add(rightMost);
+
+            B.Insert(0, rightMost);
+            B.Add(leftMost);
+
+            A.AddRange(B);
+
+            return A;
+        }
+
+
+        static bool directionOfPointToRight(PointF A, PointF B, PointF P)
+        {
+            // subtracting co-ordinates of point A
+            // from B and P, to make A as origin
+            B.X -= A.X;
+            B.Y -= A.Y;
+            P.X -= A.X;
+            P.Y -= A.Y;
+
+            // Determining cross Product
+            float cross_product = B.X * P.Y - B.Y * P.X;
+
+            return cross_product >= 0;
         }
 
 

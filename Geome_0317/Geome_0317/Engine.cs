@@ -3,21 +3,23 @@ using System.Drawing;
 
 namespace Geome_0317
 {
-    public static class Engine
+    public static partial class Engine
     {
         public static List<Point> points = new List<Point>();
         public static List<Triangle> triangles = new List<Triangle>();
         public static List<Square> squares = new List<Square>();
         public static List<Point> hull = new List<Point>();
         public static List<Point> weightCenters = new List<Point>();
+        public static List<Point> concavevertex = new List<Point>();
         public static List<MyPolygon> polygons = new List<MyPolygon>();
-        
+        public static Stack<string> history = new Stack<string>();
+
 
         public static void draw(Graphics gfx)
         {
             drawPoints(gfx);
             drawLines(gfx);
-            drawSquares(gfx);
+            //drawSquares(gfx);
         }
         public static void drawSquares(Graphics gfx)
         {
@@ -30,7 +32,22 @@ namespace Geome_0317
         }
 
 
+        public static PointF[] ConvertToPointF_FromList(List<Point> points)
+        {
+            PointF[] pointFs = new PointF[points.Count];
+            for (int i = 0; i < points.Count; i++)
+            {
+                pointFs[i] = new PointF(points[i].X, points[i].Y);
+            }
 
+            return pointFs;
+        }
+
+        public static void AddPoint(Point point)
+        {
+            points.Add(point);
+            history.Push("addpoint");
+        }
 
 
 
@@ -38,6 +55,8 @@ namespace Geome_0317
         {
             foreach (Point p in points)
                 p.draw(gfx);
+            history.Push("drawpoints");
+
         }
 
         public static void DrawHull(Graphics gfx)
@@ -59,6 +78,8 @@ namespace Geome_0317
             //draw hull points
             foreach (Point p in hull)
                 p.draw(gfx);
+            history.Push("drawhull");
+
         }
 
 
@@ -85,10 +106,11 @@ namespace Geome_0317
             gfx.DrawLine(Pens.Black, points[points.Count - 1].X, points[points.Count - 1].Y, points[0].X, points[0].Y);
         }
 
-        public static void remove()
+        public static void removepoints()
         {
             points.RemoveAt(points.Count - 1);
-            squares.RemoveAt(squares.Count - 1);
+            history.Push("removepoints");
+
         }
         public static void clear()
         {
@@ -96,7 +118,14 @@ namespace Geome_0317
             hull.Clear();
             triangles.Clear();
             weightCenters.Clear();
+            concavevertex.Clear();
             //squares.Clear();
+            history.Push("clear");
+
         }
     }
+
+
+
+
 }
